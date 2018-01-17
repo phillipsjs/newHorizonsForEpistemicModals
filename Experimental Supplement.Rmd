@@ -1,0 +1,381 @@
+---
+title: "Experimental Supplement for New horizons for a theory of epistemic modals"
+author: "Justin Khoo & Jonathan Phillips"
+date: "January 15, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+blackGreyPalette <- c("#2C3539", "#999999") 
+library(grid)
+library(ggplot2)
+library(xtable)
+library(papaja)
+library(tidyverse)
+library(lsr)
+
+```
+
+## Participants
+
+```{r participants, echo=FALSE}
+
+d <- read.csv("rawData.csv")
+
+d$Gender <- factor(c("Male","Female")[d$Gender])
+
+##Age and Gender
+d.age <- matrix(c("mean",mean(d$Age,na.rm=T),"sd",sd(d$Age,na.rm=T),"n",length(d$Age)),ncol = 3)
+d.gender <- table(d$Gender, exclude=NULL)
+```
+
+In this expeirment, `r d.age[2,3]` participants (*M*~age~=`r round(mean(d$Age, na.rm=T),digits=2)`, *SD*~age~=`r round(sd(d$Age, na.rm=T),digits=2)`; `r d.gender[[1]]` females) were recruited through Amazon Mechanical Turk ([http://www.mturk.com](http://www.mturk.com)).
+
+```{r education, echo=F, results="asis"}
+
+d$Education <- factor(c("Grammar School","Highschool or Equivalent","Vocational/Technical School",
+                                 "Some College","College Graduate (4 years)","Master's Degree",
+                                 "Doctoral Degree (PhD)","Professional Degree (JD,MD,etc.)","Other")[d$Education])
+
+d$Education <- factor(d$Education, levels=c("Grammar School","Highschool or Equivalent","Vocational/Technical School",
+                                 "Some College","College Graduate (4 years)","Master's Degree",
+                                 "Professional Degree (JD,MD,etc.)","Doctoral Degree (PhD)","Other"))
+d$Education <- factor(d$Education)
+
+education <- xtable(table(d$Education),  caption = "Reported highest level of education completed")
+colnames(education) <- "n"
+
+print.xtable(education,comment=F)  
+```
+
+## Procedure and Materials
+
+Participants completed a single trials which each involved reading a vignette about an ongoing police investigation. In all cases, participants first read the following **background** information:
+
+>The police are on the trail of Fat Tony, a local mobster. This morning, they learn of a rumor that Fat Tony has died at the docks.
+	
+>The Chief of the Police assigns Inspector A to examine the evidence at the docks. Meanwhile, the District Attorney assigns Inspector B to review the footage from the security camera at the docks.
+
+How this background continued dependend on the condition to which participants wre randomly assigned. Participants were assigned to either an **Utterances** or an **Assessments** condition, and additionally to make asssessments of either epistemic **Modal** claim, a **Non-Modal** claim, or and **Indexical** claim. 
+
+In the **Modal Utterances** case, the background continued as follows:
+
+>Inspector A takes a good look at the evidence down by the docks, and concludes that it suggests, but does not prove, that Fat Tony died at the docks. The Chief calls Inspector A at the docks and asks him, "What have you found?"
+	
+>**Inspector A replies, "Fat Tony could have died at the docks."**
+	
+>Meanwhile, Inspector B reviews the security camera footage and concludes that the footage proves that Fat Tony did \textbf{not} die at the docks. The District Attorney calls Inspector B and asks him, ``What have you found?''
+	
+> **Inspector B replies, "Fat Tony couldn't have died at the docks."**
+
+
+By contrast, in the **Modal Assessments case**, the background instead continued:
+
+>Inspector A takes a good look at the evidence down by the docks, and concludes that it suggests, but does not prove, that Fat Tony died at the docks. Afterwards, he goes home. That evening, Inspector A and his wife watch the Chief of Police talking with reporters on TV. The reporters on the news ask the Chief what his investigation had found. 
+	
+>**The Chief tells the reporters: "Fat Tony could have died at the docks."**
+	
+>Inspector A's wife knows that Inspector A was examining the evidence at the docks and so she asks him, "Is that right?"
+	
+>**Inspector A replies, "What the Chief said is true."**
+	
+>Meanwhile, Inspector B reviews the security camera footage and concludes that the footage proves that Fat Tony did not die at the docks. That evening he watches the same TV broadcast with his wife, and they also hear the Chief tell the reporters, "Fat Tony could have died at the docks."
+	
+>Inspector B's wife knows that Inspector B was examining the evidence at the docks and so she asks him, "Is that right?"
+	
+>**Inspector B replies, "What the Chief said is false."**
+
+Other participants instead evaluated a **Non-Modal** claim. These cases were identical to the preceding ones except that the Inspectors'/Chief's claim(s) did not include the epistemic modal, and thus instead read: "Fat Tony died [did not die] at the docks."
+
+
+Finally, other pariticpants instead assessed **Indexical** statements. In the **Indexical Utterances** case, the **Background** continued as follows:
+
+>Inspector A takes a good look at the evidence down by the docks, and concludes that it suggests, but does not prove, that Fat Tony died at the docks. Later that evening, Inspector A gets a call from the Chief. The Chief knows that certificates of appreciation are being given to officers who have served on the police force for at least twenty years, so he asks Inspector A, "How long have you served on the police force?"
+
+>**Inspector A replies, "I have served on the police force for twenty years."**
+	
+>Meanwhile, Inspector B reviews the security camera footage and concludes that the footage proves that Fat Tony did \textbf{not} die at the docks. Later that evening, Inspector B gets a call from the District Attorney. The District Attorney also knows that certificates of appreciation are being given to officers who have served on the police force for at least twenty years, so he asks Inspector B, "How long have you served on the police force?"
+	
+>**Inspector B replies, "I have not served on the police force for twenty years."**
+
+In the **Indexical Assessments** condition, the two inspectors instead made two different claims about the truth of the Chief's utterance:
+
+>Inspector A takes a good look at the evidence down by the docks, and concludes that it suggests, but does not prove, that Fat Tony died at the docks. Afterwards, he goes home. That evening, Inspector A and his wife watch the Chief of Police talking with reporters on TV. The reporter on the news knows that certificates of appreciation are being given to officers who have served on the police force for at least twenty years, so she asks the Chief, "How long have you served on the police force?"
+	
+>**The Chief tells the reporters: "I have served on the police force for twenty years."**
+	
+>Inspector A's wife knows that Inspector A is on the police force, and so she asks him, "Is that right?"
+	
+>**Inspector A replies, "What the Chief said is true."**
+
+>Meanwhile, Inspector B reviews the security camera footage and concludes that the footage proves that Fat Tony did not die at the docks. That evening he watches the same TV broadcast with his wife, and they also hear the Chief say to the reporter, "I have served on the police force for twenty years."
+	
+>Inspector B's wife knows that Inspector B was also on the police force, and so she asks him, "Is that right?"
+	
+>**Inspector B replies, "What the Chief said is false."**
+
+
+## Questions
+
+After reading the entire vignette, participants were reminded that the inspectors had made two different claims and were asked whether they agreed or disagreed that "At least one of the inspector's claims must be false." Participants rated their agreement on a scale from 1 ("Completely Disagree") to 7 ("Completely Agree"").
+
+After answering this question, participants also answered a manipulation check question. In the **Modal** and **Non-Modal** conditions, participants were asked to make a judgment about what was more relevant in Inspector A's conversation and, then separately, in Inspector B's conversation, which allowed us to test whether they tracked the differences across these two conversational contexts. In both cases, participants responded by selecting which of the following two options was more relevant in each conversation:
+
+* What the evidence at the docks reveals about Fat Tony.
+* What the security camera footage reveals about Fat Tony. 
+
+In the **Indexical** conditions, participants were instead separately asked who both Inspector A and Inspector B think has served on the police force for twenty years. They responded by selecting one of the following three options for each Inspector:
+
+* Inspector A
+* Inspector B
+* The Chief
+
+Finally, participants completed a brief and optional demographic questionnaire which included questions about their age, gender, ethnicity, education, and SES.
+
+## Manipulation Check Questions
+
+```{r cleaning, echo=F, warning=F, results="asis"}
+
+d$time <- rowSums(d[c(18,27,36,45,54,63)],na.rm=T)
+#hist(d$time[d$time<100])
+d <- d[d$time>30,]
+
+d$check1 <- rowSums(d[,c(20,29,38,47,56,65)],na.rm=T)
+d$check2 <- rowSums(d[,c(21,30,39,48,57,66)],na.rm=T)
+
+d <- d %>% select(c(1,15,24,33,42,51,60,80:82)) %>% gather(question,value,-c(1,8:10),na.rm=T)
+
+d$question <- factor(d$question)
+d$Statement <- factor(c("Modal","Non-modal","Indexical","Indexical","Modal","Non-modal")[d$question])
+d$Condition <- factor(c("Utterances","Utterances","Assessments","Utterances","Assessments","Assessments")[d$question])
+
+d.sum <- d %>% group_by(Statement,Condition) %>% 
+               summarise(N    = length(value),
+                  mean = mean(value, na.rm=TRUE),
+                  sd   = sd(value,na.rm=TRUE),
+                  se   = sd / sqrt(N) )
+
+
+# var.test(d$value[d$Statement=="Indexical" & d$Condition=="Utterances"]
+#          ,d$value[d$Statement=="Indexical" & d$Condition=="Assessments"])
+index.t <- t.test(d$value[d$Statement=="Indexical" & d$Condition=="Utterances"]
+                  ,d$value[d$Statement=="Indexical" & d$Condition=="Assessments"])
+index.d <- cohensD(d$value[d$Statement=="Indexical" & d$Condition=="Utterances"]
+                   ,d$value[d$Statement=="Indexical" & d$Condition=="Assessments"])
+
+d.index <- d[d$Statement=="Indexical",]
+d.index$check1 <- factor(c("Inspector A","Inspector B","The Chief")[d.index$check1])
+d.index$check2 <- factor(c("Inspector A","Inspector B","The Chief")[d.index$check2])
+
+index.u1 <- xtable(table(d.index$check1[d.index$Condition=="Utterances"]),
+                   caption = "Utterances: Who did Inspector A have in mind?")
+index.u2 <- xtable(table(d.index$check2[d.index$Condition=="Utterances"]),
+                   caption = "Utterances: Who did Inspector B have in mind?")
+index.a1 <- xtable(table(d.index$check1[d.index$Condition=="Assessments"]),
+                   caption = "Assessments: Who did Inspector A have in mind?")
+index.a2 <- xtable(table(d.index$check2[d.index$Condition=="Assessments"]),
+                   caption = "Assessments: Who did Inspector B have in mind?")
+
+colnames(index.u1) <- "n"
+colnames(index.u2) <- "n"
+colnames(index.a1) <- "n"
+colnames(index.a2) <- "n"
+
+modal.chi <- chisq.test(rbind(table(d$check1[d$Statement!="Indexical"]),table(d$check2[d$Statement!="Indexical"])))
+modal.v <- cramersV(rbind(table(d$check1[d$Statement!="Indexical"]),table(d$check2[d$Statement!="Indexical"])))
+
+
+## These chi-square approximations are probably inaccurate because of the low numbers in some cells...
+# indexU.chi <- chisq.test(rbind(table(d.index$check1[d.index$Condition=="Utterances"]),table(d.index$check2[d.index$Condition=="Utterances"])))
+# indexU.v <- cramersV(rbind(table(d.index$check1[d.index$Condition=="Utterances"]),table(d.index$check2[d.index$Condition=="Utterances"])))
+# 
+# indexA.chi <- chisq.test(rbind(table(d.index$check1[d.index$Condition=="Assessments"]),table(d.index$check2[d.index$Condition=="Assessments"])))
+# indexA.v <- cramersV(rbind(table(d.index$check1[d.index$Condition=="Assessments"]),table(d.index$check2[d.index$Condition=="Assessments"])))
+
+
+
+
+```
+
+
+We first analyzed participants' responses in the **Modal** and **Non-Modal** conditions. To ensure that participants correctly understood the relevant differences in Inspector A's and Inspector B's contexts, we first assessed participants' judgments of which evidence was most relevant in the two contexts. For both the modal and non-modal conditions, these judgments of relevance confirmed that participants largely tracked the changes in the different contexts: participants found the evidence at the docks to be more relevant in Inspector A's context, and found the evidence from the security camera to be more relevant in Inspector B's context, $\chi^2(1) =$ `r round(modal.chi$statistic[[1]],digits=2)`, $p$ `r papaja::printp(modal.chi$p.value)`, $V =$ `r round(modal.v,digits=2)`. See Tables 2-5 below.
+
+We also analyzed participants' responses in the **Indexical** conditions to ask how they interpreted the indexical sentences uttered by Inspector A and B. As expected, in the **Utterances** condition, the majority of participants ($79.49\%$) thought that Inspector A had himself in mind, and similarly, the majority ($82.05\%$) also thought that Inspector B had hiself in mind. In the **Assessments** condition, by constast, the vast majority of participants thought that Inspector A had the Chief in mind ($84.62\%$) and similarly that Inspector B had the Chief in mind ($84.62\%$). See Tables 6-9 below.
+
+```{r check, echo=F,results="asis"}
+
+d.modal <- d[d$Statement!="Indexical",]
+d.modal$check1 <- factor(c("Evdience at docks","Evidence on Camera")[d.modal$check1])
+d.modal$check2 <- factor(c("Evdience at docks","Evidence on Camera")[d.modal$check2])
+
+modal.u1 <- xtable(table(d.modal$check1[d.modal$Condition=="Utterances"]), 
+                   caption = "Utterances: What was more relevant in Inspector A's context?")
+modal.u2 <- xtable(table(d.modal$check2[d.modal$Condition=="Utterances"]),
+                   caption = "Utterances: What was more relevant in Inspector B's context?")
+modal.a1 <- xtable(table(d.modal$check1[d.modal$Condition=="Assessments"]),
+                   caption = "Assessments: What was more relevant in Inspector A's context?")
+modal.a2 <- xtable(table(d.modal$check2[d.modal$Condition=="Assessments"]),
+                   caption = "Assessments: What was more relevant in Inspector B's context?")
+
+colnames(modal.u1) <- "n"
+colnames(modal.u2) <- "n"
+colnames(modal.a1) <- "n"
+colnames(modal.a2) <- "n"
+```
+
+
+## Analyses
+
+We next turn to analyzing participants' judgments of whether one of the Inspectors' claims must be false in the **Indexical** condition. In the **Indexical Utterances** condition, where Inspector A says, "I have served on the force for more than twenty years," and Inspector B says "I have not served on the force for more than twenty years," participants strongly disagreed that at least one of the Inspectors claims must be false ($M =$ `r round(d.sum$mean[d.sum$Statement=="Indexical" & d.sum$Condition=="Utterances"], digits=2)`, $SD =$ `r round(d.sum$sd[d.sum$Statement=="Indexical" & d.sum$Condition=="Utterances"], digits=2)`). However, in the **Indexical Assessments** condition, where the two Inspectors made conflicting assessments about the Chief's utterance of "I have served on the police force for twenty years," participants instead strongly agreed that at least one of the Inspectors claims must be false ($M =$ `r round(d.sum$mean[d.sum$Statement=="Indexical" & d.sum$Condition=="Assessments"], digits=2)`, $SD =$ `r round(d.sum$sd[d.sum$Statement=="Indexical" & d.sum$Condition=="Assessments"], digits=2)`, `r papaja::apa_print(index.t)$statistic`,  $d =$ `r round(index.d,digits=2)`. 
+
+Finally, we analyzed participants' compatibility judgments in the Modal and Non-modal conditions with a 2 (Statement: Modal vs. Non-modal) x 2 (Condition: Utterances vs. Assessments) ANOVA. 
+
+```{r anova, echo=FALSE, warning=F, results="asis"}
+
+# modal.F <- anova(lm(value ~ Statement * Condition, data=d[d$Statement!="Indexical",]))
+# modal.eta <- etaSquared(lm(value ~ Statement * Condition, data=d[d$Statement!="Indexical",]))
+
+anova.table <- xtable(anova(lm(value ~ Statement * Condition, data=d[d$Statement!="Indexical",])))
+
+print.xtable(anova.table,comment = F)
+
+modal.eta <- etaSquared(lm(value ~ Statement * Condition, data=d[d$Statement!="Indexical",]))
+
+modal.des <- d %>% filter(Statement!="Indexical") %>%
+               group_by(Statement) %>% 
+               summarise(
+                  mean = mean(value, na.rm=TRUE),
+                  sd   = sd(value,na.rm=TRUE)
+                )
+ 
+# var.test(d$value[d$Statement=="Modal"]
+#          ,d$value[d$Statement=="Non-modal"])
+modal.t <- t.test(d$value[d$Statement=="Modal"]
+                  ,d$value[d$Statement=="Non-modal"])
+modal.d <- cohensD(d$value[d$Statement=="Modal"]
+                   ,d$value[d$Statement=="Non-modal"])
+
+
+```
+
+We found that participants' ratings were significantly affected by whether or not the claims involved an epistemic modal, $\eta_p^2 =$ `r round(modal.eta[1,2],digits=3)`, such that they strongly agreed that one of the inspector's claims must be false when they uttered/assessed a non-modal claim ($M =$ `r round(modal.des$mean[modal.des$Statement=="Modal"],digits=2)`, $SD =$ `r round(modal.des$sd[modal.des$Statement=="Modal"],digits=2)`), but not when they uttered/assessed a modal claim ($M =$ `r round(modal.des$mean[modal.des$Statement=="Non-modal"],digits=2)`, $SD =$ `r round(modal.des$sd[modal.des$Statement=="Non-modal"],digits=2)`), `r papaja::apa_print(modal.t)$statistic`,  $d =$ `r round(modal.d,digits=2)`. In contrast, we did not observe a significant effect of whether the Inspectors made conflicting utterances or conflicting assessments, $\eta_p^2 =$ `r round(modal.eta[2,2],digits=3)`, and most importantly did not find an interaction effect between these two variables, $\eta_p^2 =$ `r round(modal.eta[3,2],digits=3)`, meaning that the \textit{difference} between the modal and non-modal claims did not significantly differ between the **Assessments** and **Utterances** conditions.
+
+\clearpage
+
+## Graph
+```{r graphs, echo=F, warning=F, fig.width=6, fig.height=3.5, fig.cap= "Participants' mean level of agreement that at least one of the inspectors' claims must be false. Errors bars indicate +/- 1 *SEM*."}
+
+d.sum$Condition <- factor(d.sum$Condition, levels=c("Assessments","Utterances"))
+d.sum$Statement <- factor(d.sum$Statement, levels=c("Indexical","Non-modal","Modal"))
+
+d.plota <- ggplot(d.sum[d.sum$Statement=="Indexical",], aes(x=Condition, y=mean, fill=Condition)) +
+  geom_bar(stat="identity", position="dodge") +
+  scale_fill_manual(values=blackGreyPalette) +
+  ylab("Agreement with contradiction") +
+  xlab("") +
+  facet_wrap(~ Statement) +
+  coord_cartesian(ylim=c(2,7)) +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), width=.1, position=position_dodge(.9)) +
+  theme_bw() +
+  theme(
+    plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,legend.position="null"
+    ,legend.title=element_blank()
+    ,legend.text=element_text(size=rel(1))
+    ,axis.text.x=element_text(size=rel(1))
+    ,axis.text.y=element_text(size=rel(1))
+    ,axis.title=element_text(size=rel(1))
+    ,strip.text = element_text(size = rel(1))
+    ,axis.title.y = element_text(vjust = 0.75)
+    ,axis.title.x = element_text(vjust = 0.75)
+  )
+
+d.plotb <- ggplot(d.sum[d.sum$Statement!="Indexical",], aes(x=Condition, y=mean, fill=Condition)) +
+  geom_bar(stat="identity", position="dodge") +
+  scale_fill_manual(values=blackGreyPalette) +
+  ylab("Agreement with contradiction") +
+  xlab("") +
+  facet_wrap(~Statement) +
+  coord_cartesian(ylim=c(2,7)) +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se), width=.1, position=position_dodge(.9)) +
+  theme_bw() +
+  theme(
+    plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,legend.position="null"
+    ,legend.title=element_blank()
+    ,legend.text=element_text(size=rel(1))
+    ,axis.text.x=element_text(size=rel(1))
+    ,axis.text.y=element_text(size=rel(1))
+    ,axis.title=element_text(size=rel(1))
+    ,strip.text = element_text(size = rel(1))
+    ,axis.title.y = element_text(vjust = 0.75)
+    ,axis.title.x = element_text(vjust = 0.75)
+  )
+
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+multiplot(d.plota,d.plotb, layout=matrix(c(1,1,2,2,2,2),1,6))
+```
+
+\clearpage
+
+## Tables
+
+```{r tables, echo=F, results="asis"}
+
+print.xtable(modal.u1,comment=F)
+print.xtable(modal.u2,comment=F)
+print.xtable(modal.a1,comment=F)
+print.xtable(modal.a2,comment=F)
+
+print.xtable(index.u1,comment=F)
+print.xtable(index.u2,comment=F)
+print.xtable(index.a1,comment=F)
+print.xtable(index.a2,comment=F)
+
+```
+
+<!--
+
+Comments:
+
+-->
